@@ -101,7 +101,7 @@ void Synthesizer::loadPatchDataU() {
     }
   }
   HWSERIAL5.flush();
-  memcpy(currentPatchDataU, rxBuffer, 512);
+  memcpy(currentPatchData, rxBuffer, 512);
   setCurrentPatchNameU();
 }
 
@@ -125,7 +125,7 @@ void Synthesizer::loadPatchDataL() {
     }
   }
   HWSERIAL4.flush();
-  memcpy(currentPatchDataL, rxBuffer, 512);
+  memcpy(currentPatchData, rxBuffer, 512);
   setCurrentPatchNameL();
 }
 
@@ -152,7 +152,7 @@ void Synthesizer::setCurrentPatchNameU() {
   string patchName = "";
 
   for (int i = 480; i <= 504; i++) {
-    patchName += (char)currentPatchDataU[i];
+    patchName += (char)currentPatchData[i];
   }
   currentPatchNameU = patchName;
 
@@ -164,7 +164,7 @@ void Synthesizer::setCurrentPatchNameL() {
   string patchName = "";
 
   for (int i = 480; i <= 504; i++) {
-    patchName += (char)currentPatchDataL[i];
+    patchName += (char)currentPatchData[i];
   }
   currentPatchNameL = patchName;
 
@@ -188,36 +188,12 @@ const string &Synthesizer::getPatchNameL() const {
   return currentPatchNameL;
 }
 
-byte Synthesizer::getParameter(int number) const {
-  return currentPatchDataU[number];
-}
-
 byte Synthesizer::getParameterU(int number) const {
-  return currentPatchDataU[number];
+  return currentPatchData[number];
 }
 
 byte Synthesizer::getParameterL(int number) const {
-  return currentPatchDataL[number];
-}
-
-void Synthesizer::setParameter(int number, int value) {
-    HWSERIAL5.write('s');  // 's' = Set Parameter
-
-    if (number > 255) {
-      // Parameters above 255 have a two-byte format: b1 = 255, b2 = x-256
-      HWSERIAL5.write(255);
-      HWSERIAL5.write(number - 256);
-      HWSERIAL5.write(value);
-    } else {
-      HWSERIAL5.write(number);
-      HWSERIAL5.write(value);
-    }
-
-    currentPatchDataU[number] = value;
-
-    if (number >= 480 && number <= 504) {
-      setCurrentPatchNameU();
-    }
+  return currentPatchData[number];
 }
 
 void Synthesizer::setParameterU(int number, int value) {
@@ -233,7 +209,7 @@ void Synthesizer::setParameterU(int number, int value) {
     HWSERIAL5.write(value);
   }
 
-  currentPatchDataU[number] = value;
+  currentPatchData[number] = value;
 
   if (number >= 480 && number <= 504) {
     setCurrentPatchNameU();
@@ -252,7 +228,7 @@ void Synthesizer::setParameterL(int number, int value) {
     HWSERIAL4.write(value);
   }
 
-  currentPatchDataL[number] = value;
+  currentPatchData[number] = value;
 
   if (number >= 480 && number <= 504) {
     setCurrentPatchNameL();

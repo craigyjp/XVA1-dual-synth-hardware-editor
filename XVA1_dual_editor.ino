@@ -14,6 +14,7 @@
 #include "Hardware.h"
 #include <MIDI.h>
 #include <ShiftRegister74HC595.h>
+#include "global.h"
 
 #define TFT_GREY 0x5AEB
 #define MY_ORANGE 0xFBA0
@@ -58,7 +59,7 @@ int prevPatchNumberU;
 int prevPatchNumberL;
 int activeShortcut = 0;
 bool saveMode = false;
-bool lowerMode = false;
+//bool lowerMode = false;
 
 bool lowerButtonPushed = false;
 bool mainRotaryButtonPushed = false;
@@ -505,11 +506,6 @@ void mainButtonChanged(Button *btn, bool released) {
           tft.setTextSize(2);
           tft.setTextDatum(1);
           tft.drawString("Select Location", 113, 6);
-          // tft.setTextSize(2);
-          // tft.setTextDatum(2);
-          // tft.fillRect(0, 160, 240, 26, TFT_VIOLET);
-          // tft.setTextColor(TFT_WHITE);
-          // tft.drawString(" Select Location", 120, 164);
           parameterController.setDefaultSection();
         }
         if (!saveMode) {

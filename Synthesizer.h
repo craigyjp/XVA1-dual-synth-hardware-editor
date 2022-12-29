@@ -17,8 +17,8 @@ private:
     string currentPatchName = "";
     string currentPatchNameU = "";
     string currentPatchNameL = "";
-    byte currentPatchDataU[512] = {};
-    byte currentPatchDataL[512] = {};
+    byte currentPatchData[512] = {};
+    //byte currentPatchData[512] = {};
 
 public:
 
@@ -48,13 +48,9 @@ public:
 
     const string &getPatchNameL() const;
 
-    byte getParameter(int number) const;
-
     byte getParameterU(int number) const;
 
     byte getParameterL(int number) const;
-
-    void setParameter(int number, int value);
 
     void setParameterU(int number, int value);
 
