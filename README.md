@@ -14,6 +14,6 @@ Lots of things to improve on in the future in more peaceful times.
 
 Has an upper and lower button to select which synth your are editing and saves the program into either synth.
 
--Things to do
+. Things to do
 
 Add a performance mode to mix patches and store to SD card on the controller
