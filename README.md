@@ -16,4 +16,4 @@ Has an upper and lower button to select which synth your are editing and saves t
 
 # Things to do
 
-. Add a performance mode to mix patches and store to SD card on the controller
+- Add a performance mode to mix patches and store to SD card on the controller
