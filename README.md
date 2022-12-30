@@ -18,4 +18,6 @@ Has an upper and lower button to select which synth your are editing and saves t
 
 # Things to do
 
+- Clearly show besides the LED which section the editor is talking to and saving to, maybe hightlight or flash the screen section for upper or lower
+
 - Add a performance mode to mix patches and store to SD card on the controller
