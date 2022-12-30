@@ -2,7 +2,7 @@
 
 A new version of the MacMannes hardware editor that can control two XVA1 modules and copy patches between them. This allows a dual synthesizer with layers/spits etc.
 
-![Synth](photos/xva1_dual.jpg)
+![xva1_dual](photos/xva1_dual.jpg)
 
 I took the unfinished (due to illness) XVA1 hardware editor by MacMannes and doubled the displays and encoders and added a save facility for your edits.
 
