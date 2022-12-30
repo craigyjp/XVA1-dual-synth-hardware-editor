@@ -13,55 +13,61 @@ using namespace std;
 
 class Synthesizer {
 private:
-    int currentPatchNumber = 1;
-    string currentPatchName = "";
-    string currentPatchNameU = "";
-    string currentPatchNameL = "";
-    byte currentPatchData[512] = {};
-    //byte currentPatchData[512] = {};
+  int currentPatchNumber = 1;
+  int currentPatchNumberU = 1;
+  int currentPatchNumberL = 1;
+  string currentPatchName = "";
+  string currentPatchNameU = "";
+  string currentPatchNameL = "";
+  byte currentPatchData[512] = {};
+  //byte currentPatchData[512] = {};
 
 public:
 
-    void begin();
+  void begin();
 
-    void selectPatchU(int number);
+  void selectPatchU(int number);
 
-    void selectPatchL(int number);
+  void selectPatchL(int number);
 
-    void changePatchU(int number);
+  void changePatchU(int number);
 
-    void changePatchL(int number);
+  void changePatchL(int number);
 
-    void loadPatchDataU();
+  void loadPatchDataU();
 
-    void loadPatchDataL();
+  void loadPatchDataL();
 
-    void savePatchDataU(int number);
+  void savePatchDataU(int number);
 
-    void savePatchDataL(int number);
+  void savePatchDataL(int number);
 
-    int getPatchNumberU() const;
+  int getPatchNumberU() const;
 
-    int getPatchNumberL() const;
+  int getPatchNumberL() const;
 
-    const string &getPatchNameU() const;
+  const string &getPatchNameU() const;
 
-    const string &getPatchNameL() const;
+  const string &getPatchNameL() const;
 
-    byte getParameterU(int number) const;
+  byte getParameterU(int number) const;
 
-    byte getParameterL(int number) const;
+  byte getParameterL(int number) const;
 
-    void setParameterU(int number, int value);
+  void setAllParameterU(int number, int value);
 
-    void setParameterL(int number, int value);
+  void setAllParameterL(int number, int value);
 
-    void setCurrentPatchNameU();
+  void setParameterU(int number, int value);
 
-    void setCurrentPatchNameL();
+  void setParameterL(int number, int value);
 
-    Envelope getEnvelopeValues(Envelope &envelope);
+  void setCurrentPatchNameU();
+
+  void setCurrentPatchNameL();
+
+  Envelope getEnvelopeValues(Envelope &envelope);
 };
 
 
-#endif //XVA1USERINTERFACE_SYNTHESIZER_H
+#endif  //XVA1USERINTERFACE_SYNTHESIZER_H

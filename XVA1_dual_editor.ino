@@ -325,8 +325,6 @@ void handleMainEncoder(bool clockwise, int speed) {
       } else {
         synthesizer.changePatchL(currentPatchNumber);
       }
-      //clearShortcut();
-      //parameterController.setDefaultSection();
       displayPatchInfo();
     }
   }
@@ -485,10 +483,20 @@ void mainButtonChanged(Button *btn, bool released) {
       if (lowerButtonPushed) {
         srpanel.set(LOWER_LED, HIGH);
         lowerMode = true;
+        if (!saveMode) {
+          synthesizer.selectPatchL(currentPatchNumberL);
+          parameterController.setDefaultSection();
+          //synthesizer.loadPatchDataL();
+        }
       }
       if (!lowerButtonPushed) {
         srpanel.set(LOWER_LED, LOW);
         lowerMode = false;
+        if (!saveMode) {
+          synthesizer.selectPatchU(currentPatchNumberU);
+          parameterController.setDefaultSection();
+          //synthesizer.loadPatchDataU();
+        }
       }
       break;
     case SAVE_BUTTON:
@@ -516,15 +524,20 @@ void mainButtonChanged(Button *btn, bool released) {
           tft.drawString("Writing Patch", 113, 6);
           if (!lowerMode) {
             int currentPatchNumber = synthesizer.getPatchNumberU();
-            synthesizer.savePatchDataU(currentPatchNumber);
+            synthesizer.setAllParameterU(currentPatchNumberU, currentPatchNumberU);
+            synthesizer.savePatchDataU(currentPatchNumberU);
+            delay(1000);
+            displayPatchInfo();
           } else {
             int currentPatchNumber = synthesizer.getPatchNumberL();
-            synthesizer.savePatchDataL(currentPatchNumber);
+            synthesizer.setAllParameterL(currentPatchNumberL, currentPatchNumberL);
+            synthesizer.savePatchDataL(currentPatchNumberL);
+            delay(1000);
+            displayPatchInfo();
           }
-          delay(1000);
           tft.fillRect(0, 0, 240, 26, MY_ORANGE);
           tft.setTextSize(2);
-          tft.setTextDatum(1); 
+          tft.setTextDatum(1);
           tft.setTextColor(TFT_BLACK);
           tft.drawString("XVA1 Synthesizer", 113, 6);
           srpanel.set(SAVE_LED, LOW);

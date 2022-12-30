@@ -8,6 +8,9 @@ int read_status;
 #define HWSERIAL5 Serial5
 #define HWSERIAL4 Serial4
 
+//
+// READ PATCH N FROM UPPER SYNTH
+//
 
 void Synthesizer::selectPatchU(int number) {
   int synthPatchNumber = number - 1;
@@ -38,8 +41,12 @@ void Synthesizer::selectPatchU(int number) {
   Serial.println(read_status, DEC);
 
   loadPatchDataU();
-  currentPatchNumber = number;
+  currentPatchNumberU = number;
 }
+
+//
+// READ PATCH N FROM LOWER SYNTH
+//
 
 void Synthesizer::selectPatchL(int number) {
   int synthPatchNumber = number - 1;
@@ -70,16 +77,20 @@ void Synthesizer::selectPatchL(int number) {
   Serial.println(read_status, DEC);
 
   loadPatchDataL();
-  currentPatchNumber = number;
+  currentPatchNumberL = number;
 }
 
 void Synthesizer::changePatchU(int number) {
-  currentPatchNumber = number;
+  currentPatchNumberU = number;
 }
 
 void Synthesizer::changePatchL(int number) {
-  currentPatchNumber = number;
+  currentPatchNumberL = number;
 }
+
+//
+// LOADS CURRENT PATCH FROM UPPER SYNTH
+//
 
 void Synthesizer::loadPatchDataU() {
   HWSERIAL5.write('d');  // 'd' = Display program
@@ -105,6 +116,10 @@ void Synthesizer::loadPatchDataU() {
   setCurrentPatchNameU();
 }
 
+//
+// LOADS CURRENT PATCH FROM LOWER SYNTH
+//
+
 void Synthesizer::loadPatchDataL() {
   HWSERIAL4.write('d');  // 'd' = Display program
 
@@ -129,6 +144,10 @@ void Synthesizer::loadPatchDataL() {
   setCurrentPatchNameL();
 }
 
+//
+// WRITES CURRENT PATCH TO UPPER SYNTH (NO DATA TRANSFER)
+//
+
 void Synthesizer::savePatchDataU(int number) {
   int synthPatchNumber = number - 1;
 
@@ -137,6 +156,10 @@ void Synthesizer::savePatchDataU(int number) {
   HWSERIAL5.write('w');  // 'w' = Write program
   HWSERIAL5.write(synthPatchNumber);
 }
+
+//
+// WRITES CURRENT PATCH TO LOWER SYNTH (NO DATA TRANSFER)
+//
 
 void Synthesizer::savePatchDataL(int number) {
   int synthPatchNumber = number - 1;
@@ -147,6 +170,9 @@ void Synthesizer::savePatchDataL(int number) {
   HWSERIAL4.write(synthPatchNumber);
 }
 
+//
+// READS CURRENT PATCHNAME FOR UPPER SYNTH
+//
 
 void Synthesizer::setCurrentPatchNameU() {
   string patchName = "";
@@ -159,6 +185,10 @@ void Synthesizer::setCurrentPatchNameU() {
   Serial.print("Patch name: ");
   Serial.println(patchName.c_str());
 }
+
+//
+// READS CURRENT PATCHNAME FOR LOWER SYNTH
+//
 
 void Synthesizer::setCurrentPatchNameL() {
   string patchName = "";
@@ -173,11 +203,11 @@ void Synthesizer::setCurrentPatchNameL() {
 }
 
 int Synthesizer::getPatchNumberU() const {
-  return currentPatchNumber;
+  return currentPatchNumberU;
 }
 
 int Synthesizer::getPatchNumberL() const {
-  return currentPatchNumber;
+  return currentPatchNumberL;
 }
 
 const string &Synthesizer::getPatchNameU() const {
@@ -195,6 +225,77 @@ byte Synthesizer::getParameterU(int number) const {
 byte Synthesizer::getParameterL(int number) const {
   return currentPatchData[number];
 }
+
+//
+// test transfer of patch upper
+//
+
+void Synthesizer::setAllParameterU(int number, int value) {
+  Serial.println("Writing all patch data to upper Synth...");
+  Serial.println(number);
+  HWSERIAL5.flush();
+  byte txBuffer[512];
+  memcpy(txBuffer, currentPatchData, 512);
+  int bytesSent = 0;
+  int retry = 0;
+  while (bytesSent != 512 && retry != 100) {
+      HWSERIAL5.write('s');  // 's' = Set Parameter
+
+      if (bytesSent > 255) {
+        // Parameters above 255 have a two-byte format: b1 = 255, b2 = x-256
+        HWSERIAL5.write(255);
+        HWSERIAL5.write(bytesSent - 256);
+        HWSERIAL5.write(txBuffer[bytesSent]);
+      } else {
+        HWSERIAL5.write(bytesSent);
+        HWSERIAL5.write(txBuffer[bytesSent]);
+      }
+      // Serial.println("patch data to upper Synth...");
+      // Serial.println(bytesSent);
+      // Serial.println(txBuffer[bytesSent]);
+      bytesSent++;
+      retry = 0;
+  }
+  setCurrentPatchNameU();
+}
+
+//
+// test transfer of patch lower
+//
+
+void Synthesizer::setAllParameterL(int number, int value) {
+  Serial.println("Writing all patch data to lower Synth...");
+  Serial.println(number);
+  HWSERIAL4.flush();
+  byte txBuffer[512];
+  memcpy(txBuffer, currentPatchData, 512);
+  int bytesSent = 0;
+  int retry = 0;
+  while (bytesSent != 512 && retry != 100) {
+
+    HWSERIAL4.write('s');  // 's' = Set Parameter
+
+    if (bytesSent > 255) {
+      // Parameters above 255 have a two-byte format: b1 = 255, b2 = x-256
+      HWSERIAL4.write(255);
+      HWSERIAL4.write(bytesSent - 256);
+      HWSERIAL4.write(txBuffer[bytesSent]);
+    } else {
+      HWSERIAL4.write(bytesSent);
+      HWSERIAL4.write(txBuffer[bytesSent]);
+    }
+    // Serial.println("patch data to lower Synth...");
+    // Serial.println(bytesSent);
+    // Serial.println(txBuffer[bytesSent]);
+    bytesSent++;
+    retry = 0;
+  }
+  setCurrentPatchNameL();
+}
+
+//
+// SETS PARAMETER FOR UPPER SYNTH
+//
 
 void Synthesizer::setParameterU(int number, int value) {
   HWSERIAL5.write('s');  // 's' = Set Parameter
@@ -215,6 +316,13 @@ void Synthesizer::setParameterU(int number, int value) {
     setCurrentPatchNameU();
   }
 }
+
+
+
+//
+// SETS PARAMETER FOR LOWER SYNTH
+//
+
 void Synthesizer::setParameterL(int number, int value) {
   HWSERIAL4.write('s');  // 's' = Set Parameter
 
